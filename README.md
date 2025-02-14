@@ -10,6 +10,7 @@ This project demonstrates a smoke particle system using Three.js. It creates ani
 - [Usage](#usage)
 - [Code Overview](#code-overview)
 - [Customizing the Particle Animation](#customizing-the-particle-animation)
+- [Embedding into a Website](#embedding-into-a-website)
 - [License](#license)
 
 ## Features
@@ -31,7 +32,7 @@ This project demonstrates a smoke particle system using Three.js. It creates ani
 1. **Clone or Download the Repository:**
 
    ```bash
-   git clone https://github.com/andreiongd/steamm-smoke-animation.git
+   git clone https://github.com/yourusername/threejs-smoke-particles.git
    cd threejs-smoke-particles
    ```
 
@@ -124,67 +125,52 @@ const life = (Math.random() * 1.0 + 0.25) * 5.0;
 
 Modify these numbers to change the range and scale of the particle lifetimes. For example, increasing the multiplier (`5.0`) makes particles live longer.
 
-### Particle Movement
+## Embedding into a Website
 
-#### Initial Velocity
-When a particle is created, its initial velocity is defined by:
+To integrate this particle system into an existing website, follow these steps:
 
-```javascript
-velocity: new THREE.Vector3(
-  Math.random() * -18.0 + 4.0, // Horizontal movement
-  Math.random() * 5.0 - 0.5,    // Vertical movement
-  Math.random() * 5.0 - 0.5     // Depth movement
-),
-```
+1. **Include Three.js and the Particle System in Your Project**
+   Add the following script references in your HTML file:
 
-Adjust these values to control the direction and speed of the particles. For example, modifying the horizontal component (`-18.0 + 4.0`) will change the horizontal motion.
+   ```html
+   <script type="module" src="https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js"></script>
+   <script type="module" src="main.js"></script>
+   ```
 
-#### Drag
-Particles slow down over time with drag applied in the `_UpdateParticles` method:
+2. **Create a Container for the Particle System**
+   Inside your `index.html`, add a container for the Three.js canvas:
 
-```javascript
-const drag = p.velocity.clone();
-drag.multiplyScalar(timeElapsed * 0.1);
-```
+   ```html
+   <body>
+       <div id="threejs-container"></div>
+   </body>
+   ```
 
-Changing the multiplier (`0.1`) alters how quickly the particles slow down—a larger value increases the drag effect.
+3. **Modify `main.js` to Attach Three.js to Your Website**
+   Ensure your Three.js scene is rendered inside the specified container:
 
-### Particle Appearance Over Time
+   ```javascript
+   const container = document.getElementById("threejs-container");
+   const renderer = new THREE.WebGLRenderer({ antialias: true });
+   renderer.setSize(window.innerWidth, window.innerHeight);
+   container.appendChild(renderer.domElement);
+   ```
 
-The particle’s **alpha** (transparency), **size**, and **color** are interpolated over their lifetime using splines. To customize these effects, modify the spline control points in the `ParticleSystem` constructor.
+4. **Customize Styles to Ensure Fullscreen Display**
+   Add the following CSS to your `style.css` file or inside a `<style>` tag:
 
-#### Alpha Spline
-Controls the transparency of particles.
+   ```css
+   #threejs-container {
+       position: absolute;
+       top: 0;
+       left: 0;
+       width: 100%;
+       height: 100%;
+       overflow: hidden;
+   }
+   ```
 
-```javascript
-this._alphaSpline.AddPoint(0.0, 0.0);
-this._alphaSpline.AddPoint(0.1, 0.8);
-this._alphaSpline.AddPoint(0.6, 0.8);
-this._alphaSpline.AddPoint(1.0, 0.0);
-```
-
-Change these values to affect when and how particles fade in and out.
-
-#### Size Spline
-Adjusts the size of particles over time.
-
-```javascript
-this._sizeSpline.AddPoint(0.0, 1.0);
-this._sizeSpline.AddPoint(0.5, 5.0);
-this._sizeSpline.AddPoint(1.0, 1.0);
-```
-
-Modify these numbers to change how large the particles get at their peak.
-
-#### Color Spline
-Interpolates the particle color.
-
-```javascript
-this._colourSpline.AddPoint(0.0, new THREE.Color(0xedefff));
-this._colourSpline.AddPoint(1.0, new THREE.Color(0x3745ad));
-```
-
-Setting different colors at the beginning and end of the particle’s life will create various visual effects.
+Now, when you load your webpage, the Three.js smoke particle system will appear inside the `#threejs-container` div and be fully integrated into your website.
 
 ## License
 
